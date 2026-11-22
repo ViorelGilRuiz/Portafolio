@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://viorelgilruiz.netlify.app/sitemap.xml

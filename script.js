@@ -1,9 +1,50 @@
-const glow=document.querySelector('.cursor-glow');
-window.addEventListener('pointermove',(event)=>{glow.style.left=`${event.clientX}px`;glow.style.top=`${event.clientY}px`;});
-const progress=document.querySelector('.progress span');
-window.addEventListener('scroll',()=>{const max=document.documentElement.scrollHeight-innerHeight;progress.style.width=`${(scrollY/max)*100}%`;},{passive:true});
-const observer=new IntersectionObserver((entries)=>entries.forEach((entry)=>{if(entry.isIntersecting)entry.target.classList.add('in-view');}),{threshold:.14});
-document.querySelectorAll('.reveal').forEach((element)=>observer.observe(element));
-document.querySelectorAll('a[href^="mailto:"]').forEach((link)=>{link.href='mailto:viorelgilruiz@gmail.com';if(link.textContent.includes('@'))link.childNodes[0].textContent='viorelgilruiz@gmail.com ';});
-document.querySelectorAll('img[alt*="Viorel"]').forEach((image)=>{image.src='viorel-gil.jpg';});
-document.querySelectorAll('.work-image,.skill-feature').forEach((card)=>{card.addEventListener('pointermove',(event)=>{const box=card.getBoundingClientRect();const x=(event.clientX-box.left)/box.width-.5;const y=(event.clientY-box.top)/box.height-.5;card.style.transform=`perspective(900px) rotateX(${y*-5}deg) rotateY(${x*5}deg) translate3d(${x*5}px,${y*5}px,0)`;});card.addEventListener('pointerleave',()=>{card.style.transform='';});});
+const menuButton = document.querySelector('.menu-toggle');
+const navigation = document.querySelector('#main-nav');
+menuButton?.addEventListener('click', () => {
+  const open = menuButton.getAttribute('aria-expanded') !== 'true';
+  menuButton.setAttribute('aria-expanded', String(open));
+  menuButton.setAttribute('aria-label', open ? 'Cerrar menú' : 'Abrir menú');
+  navigation.classList.toggle('open', open);
+});
+navigation?.querySelectorAll('a').forEach((link) => link.addEventListener('click', () => {
+  navigation.classList.remove('open');
+  menuButton.setAttribute('aria-expanded', 'false');
+  menuButton.setAttribute('aria-label', 'Abrir menú');
+}));
+
+const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const reveals = document.querySelectorAll('.reveal');
+if (reducedMotion || !('IntersectionObserver' in window)) {
+  reveals.forEach((element) => element.classList.add('visible'));
+} else {
+  const revealObserver = new IntersectionObserver((entries, observer) => {
+    for (const entry of entries) if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+      observer.unobserve(entry.target);
+    }
+  }, { rootMargin: '0px 0px -25px 0px', threshold: .08 });
+  reveals.forEach((element) => revealObserver.observe(element));
+}
+
+const readingLine = document.querySelector('.reading-line');
+let scrollScheduled = false;
+const updateScroll = () => {
+  const height = document.documentElement.scrollHeight - innerHeight;
+  readingLine.style.width = `${height > 0 ? Math.min(100, scrollY / height * 100) : 0}%`;
+  scrollScheduled = false;
+};
+addEventListener('scroll', () => {
+  if (!scrollScheduled) { requestAnimationFrame(updateScroll); scrollScheduled = true; }
+}, { passive: true });
+updateScroll();
+
+const navLinks = [...document.querySelectorAll('#main-nav a')];
+const sections = navLinks.map((link) => document.querySelector(link.getAttribute('href'))).filter(Boolean);
+if ('IntersectionObserver' in window) {
+  const sectionObserver = new IntersectionObserver((entries) => {
+    for (const entry of entries) if (entry.isIntersecting) {
+      navLinks.forEach((link) => link.classList.toggle('active', link.getAttribute('href') === `#${entry.target.id}`));
+    }
+  }, { rootMargin: '-20% 0px -65% 0px' });
+  sections.forEach((section) => sectionObserver.observe(section));
+}
