@@ -6,3 +6,4 @@ const observer=new IntersectionObserver((entries)=>entries.forEach((entry)=>{if(
 document.querySelectorAll('.reveal').forEach((element)=>observer.observe(element));
 document.querySelectorAll('a[href^="mailto:"]').forEach((link)=>{link.href='mailto:viorelgilruiz@gmail.com';if(link.textContent.includes('@'))link.childNodes[0].textContent='viorelgilruiz@gmail.com ';});
 document.querySelectorAll('img[alt*="Viorel"]').forEach((image)=>{image.src='viorel-gil.jpg';});
+document.querySelectorAll('.work-image,.skill-feature').forEach((card)=>{card.addEventListener('pointermove',(event)=>{const box=card.getBoundingClientRect();const x=(event.clientX-box.left)/box.width-.5;const y=(event.clientY-box.top)/box.height-.5;card.style.transform=`perspective(900px) rotateX(${y*-5}deg) rotateY(${x*5}deg) translate3d(${x*5}px,${y*5}px,0)`;});card.addEventListener('pointerleave',()=>{card.style.transform='';});});
