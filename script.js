@@ -5,12 +5,23 @@ menuButton?.addEventListener('click', () => {
   menuButton.setAttribute('aria-expanded', String(open));
   menuButton.setAttribute('aria-label', open ? 'Cerrar menú' : 'Abrir menú');
   navigation.classList.toggle('open', open);
+  document.body.classList.toggle('menu-open', open);
 });
 navigation?.querySelectorAll('a').forEach((link) => link.addEventListener('click', () => {
   navigation.classList.remove('open');
   menuButton.setAttribute('aria-expanded', 'false');
   menuButton.setAttribute('aria-label', 'Abrir menú');
+  document.body.classList.remove('menu-open');
 }));
+addEventListener('keydown', (event) => {
+  if (event.key === 'Escape' && navigation?.classList.contains('open')) {
+    navigation.classList.remove('open');
+    menuButton.setAttribute('aria-expanded', 'false');
+    menuButton.setAttribute('aria-label', 'Abrir menú');
+    document.body.classList.remove('menu-open');
+    menuButton.focus();
+  }
+});
 
 const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const reveals = document.querySelectorAll('.reveal');
