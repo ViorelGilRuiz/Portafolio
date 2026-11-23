@@ -1,0 +1,28 @@
+{
+  "name": "viorel-gil-portfolio",
+  "version": "2.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node scripts/serve.mjs",
+    "build": "node scripts/build.mjs",
+    "lint": "eslint script.js scripts tests && html-validate index.html",
+    "typecheck": "tsc --allowJs --checkJs --noEmit --target es2022 --module nodenext --moduleResolution nodenext --lib es2022,dom,dom.iterable script.js",
+    "test": "node --test tests/*.test.mjs",
+    "test:browser": "node tests/browser.mjs"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "4.11.0",
+    "@eslint/js": "9.39.1",
+    "@types/node": "24.10.1",
+    "eslint": "9.39.1",
+    "globals": "16.5.0",
+    "html-validate": "10.4.0",
+    "lighthouse": "^13.0.1",
+    "pdfjs-dist": "5.4.394",
+    "playwright": "1.56.1",
+    "prettier": "^3.7.3",
+    "sharp": "0.34.5",
+    "typescript": "5.9.3"
+  }
+}
