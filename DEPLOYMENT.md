@@ -25,4 +25,6 @@ Cabeceras: CSP con recursos propios, protección contra framing, nosniff, referr
 
 La URL existente carga, pero ese hecho solo verifica la versión anterior. No se encontraron credenciales NETLIFY ni herramienta de Netlify. No se afirma un nuevo despliegue hasta disponer de evidencia de publicación y carga del nuevo contenido.
 
+Rama publicada y [PR #1](https://github.com/ViorelGilRuiz/Portafolio/pull/1) abierta. GitHub Actions pasó en Node 22 (push y pull_request). El panel de Netlify y el acceso mediante GitHub solicitan inicio de sesión; se necesita una sesión autenticada para comprobar la conexión del sitio o cargar dist manualmente. La publicación fue solicitada expresamente por el usuario; no falta autorización, falta acceso al panel.
+
 Las pruebas ejecutadas se registran en [VALIDATION.md](VALIDATION.md). Capturas locales y resultados intermedios quedan en tmp/qa, excluido de Git. No confundir pruebas del portfolio con pruebas de las aplicaciones enlazadas.

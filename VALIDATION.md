@@ -1,6 +1,6 @@
 # Validación ejecutada — 23 noviembre 2026
 
-Entorno local Windows, Node 26.13.1, npm 11.20.0 y Microsoft Edge en modo headless. CI y Netlify se configuran para Node 22; no se ha ejecutado una segunda instalación con Node 22.
+Entorno local Windows, Node 26.13.1, npm 11.20.0 y Microsoft Edge en modo headless. CI y Netlify se configuran para Node 22. GitHub Actions ha ejecutado instalación limpia, lint, typecheck, build y pruebas estáticas correctamente en Node 22.
 
 | Comprobación | Resultado |
 | --- | --- |
