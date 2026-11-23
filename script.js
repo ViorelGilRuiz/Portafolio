@@ -1,61 +1,55 @@
-const menuButton = document.querySelector('.menu-toggle');
-const navigation = document.querySelector('#main-nav');
-menuButton?.addEventListener('click', () => {
-  const open = menuButton.getAttribute('aria-expanded') !== 'true';
-  menuButton.setAttribute('aria-expanded', String(open));
-  menuButton.setAttribute('aria-label', open ? 'Cerrar menú' : 'Abrir menú');
-  navigation.classList.toggle('open', open);
-  document.body.classList.toggle('menu-open', open);
-});
-navigation?.querySelectorAll('a').forEach((link) => link.addEventListener('click', () => {
-  navigation.classList.remove('open');
-  menuButton.setAttribute('aria-expanded', 'false');
-  menuButton.setAttribute('aria-label', 'Abrir menú');
-  document.body.classList.remove('menu-open');
-}));
-addEventListener('keydown', (event) => {
-  if (event.key === 'Escape' && navigation?.classList.contains('open')) {
-    navigation.classList.remove('open');
-    menuButton.setAttribute('aria-expanded', 'false');
-    menuButton.setAttribute('aria-label', 'Abrir menú');
-    document.body.classList.remove('menu-open');
-    menuButton.focus();
+document.documentElement.classList.add("js");
+const menuButton = document.querySelector(".menu-toggle");
+const navigation = document.querySelector("#main-nav");
+/** @param {boolean} open */
+function setMenu(open) {
+  menuButton?.setAttribute("aria-expanded", String(open));
+  navigation?.classList.toggle("open", open);
+}
+menuButton?.addEventListener("click", () =>
+  setMenu(menuButton.getAttribute("aria-expanded") !== "true"),
+);
+navigation
+  ?.querySelectorAll("a")
+  .forEach((link) => link.addEventListener("click", () => setMenu(false)));
+document.addEventListener("keydown", (event) => {
+  if (
+    event.key === "Escape" &&
+    menuButton?.getAttribute("aria-expanded") === "true"
+  ) {
+    setMenu(false);
+    if (menuButton instanceof HTMLElement) menuButton.focus();
   }
 });
-
-const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
-const reveals = document.querySelectorAll('.reveal');
-if (reducedMotion || !('IntersectionObserver' in window)) {
-  reveals.forEach((element) => element.classList.add('visible'));
-} else {
-  const revealObserver = new IntersectionObserver((entries, observer) => {
-    for (const entry of entries) if (entry.isIntersecting) {
-      entry.target.classList.add('visible');
-      observer.unobserve(entry.target);
-    }
-  }, { rootMargin: '0px 0px -25px 0px', threshold: .08 });
-  reveals.forEach((element) => revealObserver.observe(element));
-}
-
-const readingLine = document.querySelector('.reading-line');
-let scrollScheduled = false;
-const updateScroll = () => {
-  const height = document.documentElement.scrollHeight - innerHeight;
-  readingLine.style.width = `${height > 0 ? Math.min(100, scrollY / height * 100) : 0}%`;
-  scrollScheduled = false;
-};
-addEventListener('scroll', () => {
-  if (!scrollScheduled) { requestAnimationFrame(updateScroll); scrollScheduled = true; }
-}, { passive: true });
-updateScroll();
-
-const navLinks = [...document.querySelectorAll('#main-nav a')];
-const sections = navLinks.map((link) => document.querySelector(link.getAttribute('href'))).filter(Boolean);
-if ('IntersectionObserver' in window) {
-  const sectionObserver = new IntersectionObserver((entries) => {
-    for (const entry of entries) if (entry.isIntersecting) {
-      navLinks.forEach((link) => link.classList.toggle('active', link.getAttribute('href') === `#${entry.target.id}`));
-    }
-  }, { rootMargin: '-20% 0px -65% 0px' });
-  sections.forEach((section) => sectionObserver.observe(section));
+document.addEventListener("click", (event) => {
+  if (
+    event.target instanceof Node &&
+    !navigation?.contains(event.target) &&
+    !menuButton?.contains(event.target)
+  )
+    setMenu(false);
+});
+matchMedia("(min-width: 761px)").addEventListener("change", () =>
+  setMenu(false),
+);
+const navLinks = [...document.querySelectorAll("#main-nav a")];
+if ("IntersectionObserver" in window) {
+  const observer = new IntersectionObserver(
+    (entries) => {
+      for (const entry of entries) {
+        if (!entry.isIntersecting) continue;
+        navLinks.forEach((link) => {
+          if (link.getAttribute("href") === `#${entry.target.id}`)
+            link.setAttribute("aria-current", "location");
+          else link.removeAttribute("aria-current");
+        });
+      }
+    },
+    { rootMargin: "-15% 0px -60% 0px" },
+  );
+  navLinks.forEach((link) => {
+    const selector = link.getAttribute("href");
+    const section = selector ? document.querySelector(selector) : null;
+    if (section) observer.observe(section);
+  });
 }
